@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hafıza Kartı Oyunu</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Kullanıcı adı girişi modalı -->
+    <div id="name-modal" class="modal">
+        <div class="modal-content">
+            <h2>Oyuncu Adı</h2>
+            <input type="text" id="player-name" placeholder="Adınızı girin" maxlength="20">
+            <button id="start-game">Oyuna Başla</button>
+        </div>
+    </div>
+
+    <div class="game-container">
+        <header class="game-header">
+            <h1>Hafıza Kartı Oyunu</h1>
+            <div class="player-info">
+                <div class="player-name">Oyuncu: <span id="display-name">-</span></div>
+                <div class="score-board">
+                    <div class="moves">Hamle: <span id="moves">0</span></div>
+                    <div class="timer">Süre: <span id="timer">0</span>s</div>
+                    <div class="score">Puan: <span id="score">0</span></div>
+                </div>
+            </div>
+            <button id="reset-button" class="reset-button">Yeniden Başlat</button>
+        </header>
+        
+        <main class="game-board" id="game-board">
+            <!-- Kartlar burada oluşturulacak -->
+        </main>
+        
+        <!-- Preview overlay - kartlar görünürken gösterilir -->
+        <div id="preview-overlay" class="preview-overlay hidden">
+            <div class="preview-content">
+                <h2>Kartlara Dikkatlice Bakın!</h2>
+                <p id="preview-countdown">5</p>
+            </div>
+        </div>
+        
+        <div id="win-modal" class="modal hidden">
+            <div class="modal-content">
+                <h2>Tebrikler <span id="winner-name"></span>!</h2>
+                <p>Oyunu tamamladınız.</p>
+                <p>Toplam Hamle: <span id="final-moves"></span></p>
+                <p>Geçen Süre: <span id="final-time"></span>s</p>
+                <p>Toplam Puan: <span id="final-score"></span></p>
+                <button id="play-again">Tekrar Oyna</button>
+            </div>
+        </div>
+        
+        <!-- Leaderboard bölümü -->
+        <div id="leaderboard-modal" class="modal hidden">
+            <div class="modal-content leaderboard">
+                <h2>Leaderboard</h2>
+                <table id="leaderboard-table">
+                    <thead>
+                        <tr>
+                            <th>Sıra</th>
+                            <th>İsim</th>
+                            <th>Puan</th>
+                            <th>Hamle</th>
+                            <th>Süre</th>
+                        </tr>
+                    </thead>
+                    <tbody id="leaderboard-body">
+                        <!-- Leaderboard verileri buraya eklenecek -->
+                    </tbody>
+                </table>
+                <button id="close-leaderboard">Kapat</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
