@@ -7,7 +7,7 @@ let timer = 20; // Oyun süresi 20 saniye
 let gameTimerInterval;
 let previewTimerInterval;
 let canFlip = true;
-let playerName = "";
+let playerName = "Misafir";
 let score = 0;
 let leaderboard = [];
 let gameActive = false; // Oyunun aktif olup olmadığını takip eder
@@ -30,9 +30,6 @@ const finalMoves = document.getElementById('final-moves');
 const finalTime = document.getElementById('final-time');
 const finalScore = document.getElementById('final-score');
 const playAgainButton = document.getElementById('play-again');
-const nameModal = document.getElementById('name-modal');
-const playerNameInput = document.getElementById('player-name');
-const startGameButton = document.getElementById('start-game');
 const displayName = document.getElementById('display-name');
 const winnerName = document.getElementById('winner-name');
 const previewOverlay = document.getElementById('preview-overlay');
@@ -40,6 +37,10 @@ const previewCountdownDisplay = document.getElementById('preview-countdown');
 const leaderboardModal = document.getElementById('leaderboard-modal');
 const leaderboardBody = document.getElementById('leaderboard-body');
 const closeLeaderboardButton = document.getElementById('close-leaderboard');
+// Yeni eklenen elementler
+const nameInputSection = document.getElementById('name-input-section');
+const winnerNameInput = document.getElementById('winner-name-input');
+const saveScoreButton = document.getElementById('save-score-button');
 
 /**
  * Fisher-Yates karıştırma algoritması
@@ -262,9 +263,6 @@ function endGame(isWin) {
         // Toplam puanı hesapla
         const totalScore = score + bonus;
         
-        // Leaderboard'a ekle
-        addToLeaderboard(totalScore);
-        
         // Sonuçları modalda göster
         winnerName.textContent = playerName;
         finalMoves.textContent = moves;
@@ -274,6 +272,10 @@ function endGame(isWin) {
         // Kazandı mesajı
         document.querySelector('#win-modal h2').textContent = `Tebrikler ${playerName}!`;
         document.querySelector('#win-modal p').textContent = "Oyunu tamamladınız.";
+        
+        // Kullanıcı adı girişi bölümünü göster
+        nameInputSection.style.display = 'block';
+        winnerNameInput.value = playerName === 'Misafir' ? '' : playerName;
         
         // Modalı göster
         winModal.classList.remove('hidden');
@@ -288,6 +290,10 @@ function endGame(isWin) {
         // Kaybetti mesajı
         document.querySelector('#win-modal h2').textContent = `${playerName}`;
         document.querySelector('#win-modal p').textContent = "Süreniz doldu!";
+        
+        // Kullanıcı adı girişi bölümünü göster
+        nameInputSection.style.display = 'block';
+        winnerNameInput.value = playerName === 'Misafir' ? '' : playerName;
         
         // Modalı göster
         winModal.classList.remove('hidden');
@@ -315,6 +321,9 @@ function addToLeaderboard(totalScore) {
     
     // LocalStorage'a kaydet
     localStorage.setItem('memoryGameLeaderboard', JSON.stringify(leaderboard));
+    
+    // Leaderboard'u güncelle
+    showLeaderboard();
 }
 
 /**
@@ -350,29 +359,41 @@ function showLeaderboard() {
  * Olay dinleyicilerini kur
  */
 function setupEventListeners() {
-    // Kullanıcı adı girişi
-    startGameButton.addEventListener('click', () => {
-        playerName = playerNameInput.value.trim() || 'Misafir';
-        displayName.textContent = playerName;
-        nameModal.classList.add('hidden');
-        startGame();
-    });
-    
-    // Enter tuşuyla oyunu başlat
-    playerNameInput.addEventListener('keyup', (e) => {
-        if (e.key === 'Enter') {
-            playerName = playerNameInput.value.trim() || 'Misafir';
-            displayName.textContent = playerName;
-            nameModal.classList.add('hidden');
-            startGame();
-        }
-    });
-    
     // Reset butonu
     resetButton.addEventListener('click', startGame);
     
     // Tekrar oyna butonu
     playAgainButton.addEventListener('click', startGame);
+    
+    // Skoru kaydet butonu
+    saveScoreButton.addEventListener('click', () => {
+        const name = winnerNameInput.value.trim() || 'Misafir';
+        playerName = name;
+        displayName.textContent = playerName;
+        
+        // Skoru leaderboard'a ekle
+        const totalScore = parseInt(finalScore.textContent);
+        addToLeaderboard(totalScore);
+        
+        // Kullanıcı adı girişi bölümünü gizle
+        nameInputSection.style.display = 'none';
+    });
+    
+    // Enter tuşuyla skoru kaydet
+    winnerNameInput.addEventListener('keyup', (e) => {
+        if (e.key === 'Enter') {
+            const name = winnerNameInput.value.trim() || 'Misafir';
+            playerName = name;
+            displayName.textContent = playerName;
+            
+            // Skoru leaderboard'a ekle
+            const totalScore = parseInt(finalScore.textContent);
+            addToLeaderboard(totalScore);
+            
+            // Kullanıcı adı girişi bölümünü gizle
+            nameInputSection.style.display = 'none';
+        }
+    });
     
     // Leaderboard kapatma butonu
     closeLeaderboardButton.addEventListener('click', () => {
@@ -384,4 +405,5 @@ function setupEventListeners() {
 document.addEventListener('DOMContentLoaded', () => {
     setupEventListeners();
     showLeaderboard();
+    startGame(); // Doğrudan oyunu başlat
 });

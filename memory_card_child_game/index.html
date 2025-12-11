@@ -7,20 +7,11 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <!-- Kullanıcı adı girişi modalı -->
-    <div id="name-modal" class="modal">
-        <div class="modal-content">
-            <h2>Oyuncu Adı</h2>
-            <input type="text" id="player-name" placeholder="Adınızı girin" maxlength="20">
-            <button id="start-game">Oyuna Başla</button>
-        </div>
-    </div>
-
     <div class="game-container">
         <header class="game-header">
             <h1>Hafıza Kartı Oyunu</h1>
             <div class="player-info">
-                <div class="player-name">Oyuncu: <span id="display-name">-</span></div>
+                <div class="player-name">Oyuncu: <span id="display-name">Misafir</span></div>
                 <div class="score-board">
                     <div class="moves">Hamle: <span id="moves">0</span></div>
                     <div class="timer">Süre: <span id="timer">0</span>s</div>
@@ -29,6 +20,11 @@
             </div>
             <button id="reset-button" class="reset-button">Yeniden Başlat</button>
         </header>
+        
+        <!-- Ana Menüye Dön Butonu -->
+        <div style="text-align: center; margin: 10px 0;">
+            <button class="btn" onclick="location.href='../index.html'">Ana Menüye Dön</button>
+        </div>
         
         <main class="game-board" id="game-board">
             <!-- Kartlar burada oluşturulacak -->
@@ -49,6 +45,12 @@
                 <p>Toplam Hamle: <span id="final-moves"></span></p>
                 <p>Geçen Süre: <span id="final-time"></span>s</p>
                 <p>Toplam Puan: <span id="final-score"></span></p>
+                <!-- Kullanıcı adı girişi -->
+                <div id="name-input-section">
+                    <label for="winner-name-input">Adınız:</label>
+                    <input type="text" id="winner-name-input" placeholder="Adınızı girin" maxlength="20">
+                    <button id="save-score-button">Skoru Kaydet</button>
+                </div>
                 <button id="play-again">Tekrar Oyna</button>
             </div>
         </div>
