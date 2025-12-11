@@ -10,7 +10,8 @@ let targetIdCounter = 0; // Hedef ID'si için sayaç
 let difficultyLevel = 1; // Zorluk seviyesi (hedef sayısı)
 let targetLifetime = 2000; // Hedeflerin ekranda kalma süresi (ms)
 let targetPool = []; // Yeniden kullanılabilir hedefler için havuz
-const MAX_TARGETS = 4; // Maksimum aynı anda ekranda olabilecek hedef sayısı
+let targetSize = 'medium'; // Hedef boyutu (small, medium, large)
+let maxTargets = 4; // Maksimum aynı anda ekranda olabilecek hedef sayısı
 let leaderboard = []; // Leaderboard verileri
 
 // DOM elementleri
@@ -30,6 +31,11 @@ const leaderboardModal = document.getElementById('leaderboard-modal');
 const leaderboardBody = document.getElementById('leaderboard-body');
 const closeLeaderboardButton = document.getElementById('close-leaderboard');
 
+// Ayarlar elementleri
+const targetSizeSelect = document.getElementById('target-size');
+const targetLifetimeSelect = document.getElementById('target-lifetime');
+const maxTargetsSelect = document.getElementById('max-targets');
+
 // Olay dinleyicileri
 startButton.addEventListener('click', startGame);
 resetButton.addEventListener('click', resetGame);
@@ -38,11 +44,23 @@ saveScoreButton.addEventListener('click', saveScore);
 playAgainButton.addEventListener('click', resetGame);
 closeLeaderboardButton.addEventListener('click', hideLeaderboard);
 
+// Ayarlar değişiklik olayları
+targetSizeSelect.addEventListener('change', updateSettings);
+targetLifetimeSelect.addEventListener('change', updateSettings);
+maxTargetsSelect.addEventListener('change', updateSettings);
+
 // Oyun konteynerine tıklama olayı (ıskalama için)
 gameContainer.addEventListener('click', handleMiss);
 
 // Mouse hareketini takip et
 gameContainer.addEventListener('mousemove', moveCrosshair);
+
+// Ayarları güncelle
+function updateSettings() {
+    targetSize = targetSizeSelect.value;
+    targetLifetime = parseInt(targetLifetimeSelect.value);
+    maxTargets = parseInt(maxTargetsSelect.value);
+}
 
 // Crosshair'i mouse ile hareket ettir
 function moveCrosshair(e) {
@@ -63,10 +81,10 @@ function createTargetPool() {
     // Önceden oluşturulmuş hedefleri temizle
     targetPool = [];
     
-    // 10 adet hedef oluştur (maksimum ihtiyaca göre)
-    for (let i = 0; i < 10; i++) {
+    // 15 adet hedef oluştur (maksimum ihtiyaca göre)
+    for (let i = 0; i < 15; i++) {
         const target = document.createElement('div');
-        target.className = 'target';
+        target.className = `target ${targetSize}`;
         target.style.display = 'none';
         target.addEventListener('click', handleTargetClick);
         gameContainer.appendChild(target);
@@ -95,6 +113,9 @@ function handleTargetClick(e) {
 // Oyunu başlat
 function startGame() {
     if (gameActive) return;
+    
+    // Ayarları güncelle
+    updateSettings();
     
     // Değişkenleri sıfırla
     score = 0;
@@ -173,7 +194,7 @@ function resetGame() {
 // Hedef oluştur
 function createTarget() {
     // Maksimum hedef sayısına ulaşıldıysa yeni hedef oluşturma
-    if (targets.length >= MAX_TARGETS) return null;
+    if (targets.length >= maxTargets) return null;
     
     if (!gameActive) return null;
     
@@ -183,14 +204,36 @@ function createTarget() {
     // Eğer müsait hedef yoksa çık
     if (!targetElement) return null;
     
+    // Hedef boyutunu ayarla
+    targetElement.className = `target ${targetSize}`;
+    
     // Oyun alanının boyutlarını al
     const containerWidth = gameContainer.offsetWidth;
     const containerHeight = gameContainer.offsetHeight;
-    const targetSize = 70; // Hedef boyutu (CSS'de tanımlı)
+    
+    // Hedef boyutuna göre boyut al
+    let targetWidth, targetHeight;
+    switch(targetSize) {
+        case 'small':
+            targetWidth = 50;
+            targetHeight = 50;
+            break;
+        case 'medium':
+            targetWidth = 70;
+            targetHeight = 70;
+            break;
+        case 'large':
+            targetWidth = 90;
+            targetHeight = 90;
+            break;
+        default:
+            targetWidth = 70;
+            targetHeight = 70;
+    }
     
     // Hedefin taşmaması için maksimum pozisyonları hesapla
-    const maxX = containerWidth - targetSize;
-    const maxY = containerHeight - targetSize;
+    const maxX = containerWidth - targetWidth;
+    const maxY = containerHeight - targetHeight;
     
     // Rastgele pozisyon hesapla
     const x = Math.floor(Math.random() * maxX);
@@ -208,7 +251,7 @@ function createTarget() {
         timeout: null
     };
     
-    // Hedefi 2 saniye sonra otomatik olarak kaldır
+    // Hedefi belirlenen sürede sonra otomatik olarak kaldır
     targetObj.timeout = setTimeout(() => {
         removeTarget(targetObj);
     }, targetLifetime);
@@ -224,7 +267,7 @@ function createTargets() {
     if (!gameActive) return;
     
     // Maksimum hedef sayısını aşmayacak şekilde hedef oluştur
-    const targetsToCreate = Math.min(difficultyLevel, MAX_TARGETS - targets.length);
+    const targetsToCreate = Math.min(difficultyLevel, maxTargets - targets.length);
     
     // Hedef oluştur
     for (let i = 0; i < targetsToCreate; i++) {
@@ -294,7 +337,7 @@ function updateTimer() {
     
     // Zorluk seviyesini artır (her 5 saniyede bir)
     if ((60 - timeLeft) % 5 === 0 && timeLeft < 60 && timeLeft > 0) {
-        difficultyLevel = Math.min(difficultyLevel + 1, 4); // Maksimum 4 hedef
+        difficultyLevel = Math.min(difficultyLevel + 1, maxTargets); // Maksimum hedef sayısına kadar
     }
     
     // Yeni hedefler oluştur

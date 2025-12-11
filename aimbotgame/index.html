@@ -13,6 +13,40 @@
             <p>Nişan Alma Becerilerini Test Et</p>
         </header>
 
+        <!-- Ayarlar Paneli -->
+        <div class="settings-panel">
+            <h3>Oyun Ayarları</h3>
+            <div class="setting-group">
+                <label for="target-size">Hedef Boyutu:</label>
+                <select id="target-size">
+                    <option value="small">Küçük (50px)</option>
+                    <option value="medium" selected>Orta (70px)</option>
+                    <option value="large">Büyük (90px)</option>
+                </select>
+            </div>
+            
+            <div class="setting-group">
+                <label for="target-lifetime">Kaybolma Süresi:</label>
+                <select id="target-lifetime">
+                    <option value="1000">1 Saniye</option>
+                    <option value="2000" selected>2 Saniye</option>
+                    <option value="3000">3 Saniye</option>
+                </select>
+            </div>
+            
+            <div class="setting-group">
+                <label for="max-targets">Maksimum Hedef Sayısı:</label>
+                <select id="max-targets">
+                    <option value="1">1 Hedef</option>
+                    <option value="2">2 Hedef</option>
+                    <option value="3">3 Hedef</option>
+                    <option value="4" selected>4 Hedef</option>
+                    <option value="5">5 Hedef</option>
+                    <option value="6">6 Hedef</option>
+                </select>
+            </div>
+        </div>
+
         <div class="stats-container">
             <div class="stat-box">
                 <div class="stat-label">Skor</div>
@@ -47,7 +81,7 @@
                 <li>"Başla" butonuna tıklayarak oyunu başlatın</li>
                 <li>60 saniyeniz var, kırmızı hedefleri mümkün olduğu kadar çok vurun</li>
                 <li>Boşluğa tıklamak doğruluğunuzu düşürür</li>
-                <li>Zamanla birlikte hedefler çoğalacak ve her hedef 2 saniye sonra kaybolacak</li>
+                <li>Zamanla birlikte hedefler çoğalacak ve her hedef belirlediğiniz sürede sonra kaybolacak</li>
                 <li>Oyun bittiğinde skorunuzu görün</li>
             </ul>
         </div>
