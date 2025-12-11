@@ -1,0 +1,496 @@
+/* Temel stil ayarları */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    color: #fff;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    overflow: hidden; /* Kaydırma çubuklarını gizle */
+}
+
+.container {
+    max-width: 1000px;
+    width: 100%;
+    text-align: center;
+}
+
+/* Başlık stilleri */
+.game-header h1 {
+    font-size: 2.5rem;
+    margin-bottom: 10px;
+    background: linear-gradient(90deg, #ff6b6b, #4ecdc4);
+    -webkit-background-clip: text;
+    background-clip: text; /* Uyarı için eklenen standart özellik */
+    -webkit-text-fill-color: transparent;
+    text-shadow: 0 0 10px rgba(255, 107, 107, 0.3);
+}
+
+.game-header p {
+    font-size: 1.1rem;
+    color: #a0a0a0;
+    margin-bottom: 30px;
+}
+
+/* İstatistik kutuları */
+.stats-container {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    margin-bottom: 30px;
+    flex-wrap: wrap;
+}
+
+.stat-box {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 15px;
+    padding: 20px;
+    min-width: 150px;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+.stat-label {
+    font-size: 1rem;
+    color: #a0a0a0;
+    margin-bottom: 10px;
+}
+
+.stat-value {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #4ecdc4;
+}
+
+/* Oyun alanı */
+.game-area {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 30px;
+}
+
+.game-container {
+    width: 800px;
+    height: 600px;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 10px;
+    position: relative;
+    overflow: hidden;
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+    cursor: none; /* Standart imleci gizle */
+    will-change: transform; /* Performans optimizasyonu */
+}
+
+/* Hedef tasarımı */
+.target {
+    width: 70px;
+    height: 70px;
+    background: radial-gradient(circle, #ff6b6b 0%, #ff5252 70%, #ff0000 100%);
+    border-radius: 50%;
+    position: absolute;
+    cursor: none;
+    box-shadow: 0 0 20px #ff6b6b, inset 0 0 10px rgba(255, 255, 255, 0.5);
+    transition: transform 0.1s ease;
+    z-index: 10; /* Hedeflerin crosshair'in altında olması için */
+    will-change: transform, opacity; /* Performans optimizasyonu */
+}
+
+/* Hedefin merkezindeki halka */
+.target::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 30px;
+    height: 30px;
+    border: 3px solid white;
+    border-radius: 50%;
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+}
+
+/* Hedefin merkezindeki nokta */
+.target::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 10px;
+    height: 10px;
+    background: white;
+    border-radius: 50%;
+    box-shadow: 0 0 5px rgba(255, 255, 255, 0.8);
+}
+
+/* Hedef vurulduğunda animasyon */
+.target.hit {
+    animation: hitAnimation 0.3s forwards;
+}
+
+@keyframes hitAnimation {
+    0% {
+        transform: scale(1);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(3);
+        opacity: 0;
+    }
+}
+
+/* Özel crosshair imleci */
+.crosshair {
+    width: 30px;
+    height: 30px;
+    position: absolute;
+    pointer-events: none;
+    z-index: 1000;
+    display: none;
+    will-change: transform; /* Performans optimizasyonu */
+}
+
+.crosshair::before,
+.crosshair::after {
+    content: '';
+    position: absolute;
+    background: rgba(255, 255, 255, 0.8);
+    box-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+}
+
+.crosshair::before {
+    width: 30px;
+    height: 2px;
+    top: 50%;
+    left: 0;
+    transform: translateY(-50%);
+}
+
+.crosshair::after {
+    width: 2px;
+    height: 30px;
+    left: 50%;
+    top: 0;
+    transform: translateX(-50%);
+}
+
+.crosshair.center-dot::before {
+    content: '';
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    background: white;
+    border-radius: 50%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 0 5px white;
+}
+
+/* Kontrol butonları */
+.controls {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-bottom: 30px;
+    flex-wrap: wrap;
+}
+
+.btn {
+    background: linear-gradient(135deg, #ff6b6b, #ff5252);
+    color: white;
+    border: none;
+    padding: 15px 30px;
+    font-size: 1.1rem;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 5px 15px rgba(255, 107, 107, 0.4);
+}
+
+.btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(255, 107, 107, 0.6);
+}
+
+.btn:active {
+    transform: translateY(1px);
+}
+
+.btn:disabled {
+    background: linear-gradient(135deg, #555, #777);
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+/* Talimatlar */
+.instructions {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 15px;
+    padding: 25px;
+    max-width: 800px;
+    margin: 0 auto;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.instructions h3 {
+    margin-bottom: 15px;
+    color: #4ecdc4;
+}
+
+.instructions ul {
+    list-style-type: none;
+    text-align: left;
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+.instructions li {
+    margin-bottom: 10px;
+    padding-left: 25px;
+    position: relative;
+    color: #ccc;
+}
+
+.instructions li::before {
+    content: '•';
+    color: #ff6b6b;
+    font-size: 1.5rem;
+    position: absolute;
+    left: 0;
+    top: -5px;
+}
+
+/* Oyun bitiş modalı */
+.game-over-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+    display: none;
+}
+
+.modal-content {
+    background: linear-gradient(135deg, #1a1a2e, #16213e);
+    padding: 40px;
+    border-radius: 20px;
+    text-align: center;
+    max-width: 500px;
+    width: 90%;
+    box-shadow: 0 0 50px rgba(255, 107, 107, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.modal-content h2 {
+    font-size: 2.5rem;
+    margin-bottom: 20px;
+    color: #ff6b6b;
+}
+
+.modal-stats {
+    display: flex;
+    justify-content: space-around;
+    margin: 30px 0;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.modal-stat {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 15px;
+    border-radius: 10px;
+    min-width: 120px;
+}
+
+.modal-stat-label {
+    font-size: 1rem;
+    color: #a0a0a0;
+    margin-bottom: 5px;
+}
+
+.modal-stat-value {
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: #4ecdc4;
+}
+
+/* Oyuncu adı girişi */
+.player-input {
+    margin: 20px 0;
+}
+
+.player-input label {
+    display: block;
+    margin-bottom: 10px;
+    font-size: 1.2rem;
+    color: #4ecdc4;
+}
+
+.player-input input {
+    width: 80%;
+    padding: 12px;
+    font-size: 1rem;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: rgba(0, 0, 0, 0.3);
+    color: white;
+    text-align: center;
+}
+
+.player-input input:focus {
+    outline: none;
+    border-color: #4ecdc4;
+    box-shadow: 0 0 10px rgba(78, 205, 196, 0.5);
+}
+
+/* Leaderboard modalı */
+.leaderboard-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.9);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 3000;
+    display: none;
+}
+
+.leaderboard-modal .modal-content {
+    max-width: 700px;
+    width: 90%;
+    padding: 30px;
+}
+
+.leaderboard-modal h2 {
+    font-size: 2.5rem;
+    margin-bottom: 20px;
+    color: #ff6b6b;
+}
+
+/* Leaderboard tablosu */
+#leaderboard-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    font-size: 1.1rem;
+}
+
+#leaderboard-table th {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 15px;
+    text-align: center;
+    color: #4ecdc4;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+}
+
+#leaderboard-table td {
+    padding: 12px;
+    text-align: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+#leaderboard-table tr:nth-child(even) {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+#leaderboard-table tr:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+#leaderboard-table tr:first-child td {
+    font-weight: bold;
+    color: #ffd700; /* Altın rengi */
+}
+
+#leaderboard-table tr:nth-child(2) td {
+    color: #c0c0c0; /* Gümüş rengi */
+}
+
+#leaderboard-table tr:nth-child(3) td {
+    color: #cd7f32; /* Bronz rengi */
+}
+
+/* Responsive tasarım */
+@media (max-width: 850px) {
+    .game-container {
+        width: 95vw;
+        height: 70vh;
+        min-height: 400px;
+    }
+    
+    .stats-container {
+        gap: 15px;
+    }
+    
+    .stat-box {
+        min-width: 120px;
+        padding: 15px;
+    }
+    
+    .stat-value {
+        font-size: 1.5rem;
+    }
+    
+    .controls {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .btn {
+        width: 80%;
+        margin-bottom: 10px;
+    }
+}
+
+@media (max-width: 600px) {
+    .game-header h1 {
+        font-size: 2rem;
+    }
+    
+    .stats-container {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .modal-stats {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .modal-stat {
+        width: 80%;
+    }
+    
+    .instructions ul {
+        padding: 0 10px;
+    }
+    
+    #leaderboard-table {
+        font-size: 0.9rem;
+    }
+    
+    #leaderboard-table th,
+    #leaderboard-table td {
+        padding: 8px;
+    }
+}
